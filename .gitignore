@@ -93,4 +93,7 @@ tags
 .history
 .ionide
 
+### Environments ###
+.envrc
+
 # End of https://www.toptal.com/developers/gitignore/api/osx,vim,linux,dotnetcore,visualstudiocode
