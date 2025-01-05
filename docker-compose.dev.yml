@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+  api:
+    image: dotnet-webapi/api:${VERSION}
+    container_name: dotnet-api-dev
+    tty: true
+    stdin_open: true
+    ports:
+      - 5000:5000
+    volumes:
+      - ./src/.:/code

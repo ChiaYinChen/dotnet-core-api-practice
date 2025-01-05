@@ -1,0 +1,7 @@
+**/bin
+**/obj
+**/.git
+**/.dockerignore
+**/.gitignore
+.DS_Store
+README.md
