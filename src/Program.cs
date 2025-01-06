@@ -1,4 +1,15 @@
+using Microsoft.EntityFrameworkCore;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
+using WebApiApp.Data;
+using WebApiApp.Helpers;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// Configure DbContext with PostgreSQL connection
+var connectionURI = builder.Configuration.GetConnectionString("DefaultConnection");
+connectionURI = DbConnectionHelper.BuildConnectionURI(connectionURI);
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(connectionURI));
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
