@@ -8,5 +8,10 @@ namespace WebApiApp.Helpers
         {
             return TimeZoneInfo.ConvertTime(DateTime.Now, AppTimeZone);
         }
+
+        public static DateTimeOffset UtcNow()
+        {
+            return DateTimeOffset.UtcNow;
+        }
     }
 }
