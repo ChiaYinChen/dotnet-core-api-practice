@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using Npgsql.EntityFrameworkCore.PostgreSQL;
 using WebApiApp.Data;
 using WebApiApp.Helpers;
+using WebApiApp.Repositories;
+using WebApiApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,15 @@ var connectionURI = builder.Configuration.GetConnectionString("DefaultConnection
 connectionURI = DbConnectionHelper.BuildConnectionURI(connectionURI);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionURI));
+
+// Configure repositories
+builder.Services.AddScoped<AccountRepository>();
+
+// Configure services
+builder.Services.AddScoped<AccountService>();
+
+// Add AutoMapper with a custom mapping profile
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
