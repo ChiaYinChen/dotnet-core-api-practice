@@ -12,6 +12,10 @@ namespace WebApiApp.MappingProfiles
             // Source: CreateAccountDTO and Destination: Account
             CreateMap<CreateAccountDTO, Account>()
                 .ForMember(dest => dest.HashedPassword, opt => opt.MapFrom(src => HashPassword(src.Password)));
+
+            // Map Account to AccountDTO
+            // Source: Account and Destination: AccountDTO
+            CreateMap<Account, AccountDTO>();
         }
 
         private string HashPassword(string password)

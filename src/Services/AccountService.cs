@@ -16,6 +16,11 @@ namespace WebApiApp.Services
             _mapper = mapper;
         }
 
+        public async Task<Account> GetAccount(string email)
+        {
+            return await _accountRepository.GetByEmailAsync(email);
+        }
+
         public async Task<Account> CreateAccount(CreateAccountDTO createAccountDto)
         {
             var account = _mapper.Map<Account>(createAccountDto);
