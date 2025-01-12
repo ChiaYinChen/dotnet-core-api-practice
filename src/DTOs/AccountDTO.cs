@@ -19,6 +19,6 @@ namespace WebApiApp.DTOs
         public DateTimeOffset UpdatedAt { get; set; }
 
         [JsonIgnore]
-        public string HashedPassword { get; set; }
+        public string? HashedPassword { get; set; }
     }
 }

@@ -19,11 +19,37 @@ namespace WebApiApp.Controllers
             _mapper = mapper;
         }
 
+        // GET /api/account
+        [HttpGet]
+        public async Task<ActionResult<Response<IEnumerable<AccountDTO>>>> GetAccounts()
+        {
+            var accounts = await _accountService.GetAllAccounts();
+            return Ok(ResponseHelper.Success(
+                data: _mapper.Map<List<AccountDTO>>(accounts)
+            ));
+        }
+
+        // GET /api/account/:id
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Response<AccountDTO>>> GetAccount(Guid id)
+        {
+            var account = await _accountService.GetAccountByID(id);
+            if (account == null)
+            {
+                return NotFound(ResponseHelper.Error(
+                    message: "Account not found"
+                ));
+            }
+            return Ok(ResponseHelper.Success(
+                data: _mapper.Map<AccountDTO>(account)
+            ));
+        }
+        
         // POST: /api/accounts
         [HttpPost]
         public async Task<ActionResult<Response<AccountDTO>>> CreateAccount([FromBody] CreateAccountDTO createAccountDto)
         {
-            var account = await _accountService.GetAccount(createAccountDto.Email);
+            var account = await _accountService.GetAccountByEmail(createAccountDto.Email);
             if (account != null)
             {
                 return StatusCode(409, ResponseHelper.Error(

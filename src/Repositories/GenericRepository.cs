@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 public interface IGenericRepository<TEntity> where TEntity : class
 {
-    Task<TEntity> GetAsync(Guid id);
+    Task<TEntity?> GetByIDAsync(Guid id);
     Task<List<TEntity>> GetAllAsync();
     Task<TEntity> CreateAsync(TEntity entity);
     Task<TEntity> UpdateAsync(TEntity entity, object updatedObject);
@@ -23,7 +23,7 @@ namespace WebApiApp.Repositories
             _dbSet = _context.Set<TEntity>();
         }
 
-        public async Task<TEntity> GetAsync(Guid id)
+        public async Task<TEntity?> GetByIDAsync(Guid id)
         {
             return await _dbSet.FindAsync(id);
         }

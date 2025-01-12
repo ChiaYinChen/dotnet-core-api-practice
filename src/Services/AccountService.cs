@@ -16,7 +16,17 @@ namespace WebApiApp.Services
             _mapper = mapper;
         }
 
-        public async Task<Account> GetAccount(string email)
+        public async Task<List<Account>> GetAllAccounts()
+        {
+            return await _accountRepository.GetAllAsync();
+        }
+        
+        public async Task<Account?> GetAccountByID(Guid id)
+        {
+            return await _accountRepository.GetByIDAsync(id);
+        }
+        
+        public async Task<Account?> GetAccountByEmail(string email)
         {
             return await _accountRepository.GetByEmailAsync(email);
         }
