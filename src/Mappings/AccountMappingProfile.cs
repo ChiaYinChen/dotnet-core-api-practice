@@ -1,6 +1,7 @@
 using AutoMapper;
 using WebApiApp.DTOs;
 using WebApiApp.Models;
+using WebApiApp.Helpers;
 
 namespace WebApiApp.MappingProfiles
 {
@@ -11,16 +12,11 @@ namespace WebApiApp.MappingProfiles
             // Map CreateAccountDTO to Account (for adding new account)
             // Source: CreateAccountDTO and Destination: Account
             CreateMap<CreateAccountDTO, Account>()
-                .ForMember(dest => dest.HashedPassword, opt => opt.MapFrom(src => HashPassword(src.Password)));
+                .ForMember(dest => dest.HashedPassword, opt => opt.MapFrom(src => SecurityHelper.HashPassword(src.Password)));
 
             // Map Account to AccountDTO
             // Source: Account and Destination: AccountDTO
             CreateMap<Account, AccountDTO>();
-        }
-
-        private string HashPassword(string password)
-        {
-            return Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(password));
         }
     }
 }

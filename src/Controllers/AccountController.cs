@@ -64,5 +64,24 @@ namespace WebApiApp.Controllers
                 data: accountDto
             ));
         }
+
+        // PATCH: /api/accounts/:id
+        [HttpPatch("{id}")]
+        public async Task<ActionResult<Response<AccountDTO>>> UpdateAccount([FromRoute] Guid id, [FromBody] UpdateAccountDTO updateAccountDTO)
+        {
+            var account = await _accountService.GetAccountByID(id);
+            if (account == null)
+            {
+                return NotFound(ResponseHelper.Error(
+                    message: "Account not found"
+                ));
+            }
+
+            var updatedAccount = await _accountService.UpdateAccount(account, updateAccountDTO);
+            return Ok(ResponseHelper.Success(
+                message: "Updated Successfully",
+                data: _mapper.Map<AccountDTO>(updatedAccount)
+            ));
+        }
     }
 }

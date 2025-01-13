@@ -42,7 +42,20 @@ namespace WebApiApp.Repositories
 
         public async Task<TEntity> UpdateAsync(TEntity entity, object updatedObject)
         {
-            _context.Entry(entity).CurrentValues.SetValues(updatedObject);
+            var currentValues = _context.Entry(entity).CurrentValues;
+            
+            if (updatedObject is Dictionary<string, object> updatedData)
+            {
+                foreach (var keyValue in updatedData)
+                {
+                    currentValues[keyValue.Key] = keyValue.Value;
+                }
+            }
+            else
+            {
+                _context.Entry(entity).CurrentValues.SetValues(updatedObject);
+            }
+
             await _context.SaveChangesAsync();
             return entity;
         }
