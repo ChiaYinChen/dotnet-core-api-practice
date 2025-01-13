@@ -83,5 +83,21 @@ namespace WebApiApp.Controllers
                 data: _mapper.Map<AccountDTO>(updatedAccount)
             ));
         }
+
+        // DELETE: /api/accounts/:id
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAccount([FromRoute] Guid id)
+        {
+            var account = await _accountService.GetAccountByID(id);
+            if (account == null)
+            {
+                return NotFound(ResponseHelper.Error(
+                    message: "Account not found"
+                ));
+            }
+            
+            await _accountService.DeleteAccount(account);
+            return NoContent();
+        }
     }
 }

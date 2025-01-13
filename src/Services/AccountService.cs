@@ -61,5 +61,10 @@ namespace WebApiApp.Services
             
             return await _accountRepository.UpdateAsync(accountObj, updatedData);
         }
+
+        public async Task<Account> DeleteAccount(Account accountObj)
+        {
+            return await _accountRepository.RemoveAsync(accountObj);
+        }
     }
 }
