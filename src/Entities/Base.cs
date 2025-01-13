@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace WebApiApp.Models
+namespace WebApiApp.Entities
 {
     public abstract class BaseEntity
     {

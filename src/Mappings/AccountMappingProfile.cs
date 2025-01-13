@@ -1,6 +1,6 @@
 using AutoMapper;
 using WebApiApp.DTOs;
-using WebApiApp.Models;
+using WebApiApp.Entities;
 using WebApiApp.Helpers;
 
 namespace WebApiApp.MappingProfiles
