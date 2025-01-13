@@ -1,20 +1,8 @@
+using WebApiApp.Models;
+
 namespace WebApiApp.Helpers
 {
-    public class Response<T>
-    {
-        public required string Code { get; set; }
-        public required string Message { get; set; }
-        public T? Data { get; set; }
-    }
-
-    public class Response
-    {
-        public required string Code { get; set; }
-        public required string Message { get; set; }
-        public object? Errors { get; set; }
-    }
-
-    public static class ResponseHelper
+    public class ResponseHelper
     {
         public static Response<T> Success<T>(T data, string message = "Success", string code = "0000")
         {

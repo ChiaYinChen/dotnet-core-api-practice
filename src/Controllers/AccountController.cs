@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using WebApiApp.DTOs;
+using WebApiApp.Models;
 using WebApiApp.Services;
 using WebApiApp.Helpers;
 
