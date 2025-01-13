@@ -44,7 +44,7 @@ namespace WebApiApp.Services
 
             if (!string.IsNullOrEmpty(updateAccountDto.Password))
             {
-                updatedData["HashedPassword"] = SecurityHelper.HashPassword(updateAccountDto.Password);
+                updatedData["HashedPassword"] = Security.HashPassword(updateAccountDto.Password);
             }
             if (!string.IsNullOrEmpty(updateAccountDto.Name))
             {

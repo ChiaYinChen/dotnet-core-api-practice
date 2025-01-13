@@ -1,6 +1,6 @@
 namespace WebApiApp.Helpers
 {
-    public static class SecurityHelper
+    public class Security
     {
         public static string HashPassword(string password)
         {
@@ -8,7 +8,7 @@ namespace WebApiApp.Helpers
             {
                 throw new ArgumentException("Password cannot be null or empty", nameof(password));
             }
-            return Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(password));
+            return BCrypt.Net.BCrypt.HashPassword(password);
         }
     }
         

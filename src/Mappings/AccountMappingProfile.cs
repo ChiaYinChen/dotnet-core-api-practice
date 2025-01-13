@@ -12,7 +12,7 @@ namespace WebApiApp.MappingProfiles
             // Map CreateAccountDTO to Account (for adding new account)
             // Source: CreateAccountDTO and Destination: Account
             CreateMap<CreateAccountDTO, Account>()
-                .ForMember(dest => dest.HashedPassword, opt => opt.MapFrom(src => SecurityHelper.HashPassword(src.Password)));
+                .ForMember(dest => dest.HashedPassword, opt => opt.MapFrom(src => Security.HashPassword(src.Password)));
 
             // Map Account to AccountDTO
             // Source: Account and Destination: AccountDTO
