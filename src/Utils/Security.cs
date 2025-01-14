@@ -10,6 +10,11 @@ namespace WebApiApp.Helpers
             }
             return BCrypt.Net.BCrypt.HashPassword(password);
         }
+
+        public static bool VerifyPassword(string plainPassword, string hashedPassword)
+        {
+            return BCrypt.Net.BCrypt.Verify(plainPassword, hashedPassword);
+        }
     }
         
 }

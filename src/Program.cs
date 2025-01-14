@@ -16,6 +16,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<AccountRepository>();
 
 // Configure services
+builder.Services.AddScoped<JwtHelper>();
 builder.Services.AddScoped<AccountService>();
 
 // Add AutoMapper with a custom mapping profile

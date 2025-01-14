@@ -66,5 +66,19 @@ namespace WebApiApp.Services
         {
             return await _accountRepository.RemoveAsync(accountObj);
         }
+
+        public async Task<Account> Authenticate(string email, string password)
+        {
+            var account = await GetAccountByEmail(email);
+            if (account == null)
+            {
+                return null;
+            }
+            if (!Security.VerifyPassword(password, account.HashedPassword))
+            {
+                return null;
+            }
+            return account;
+        }
     }
 }
