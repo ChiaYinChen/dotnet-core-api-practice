@@ -7,10 +7,10 @@ using WebApiApp.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Configure DbContext with PostgreSQL connection
-var connectionURI = builder.Configuration.GetConnectionString("DefaultConnection");
-connectionURI = DbConnectionHelper.BuildConnectionURI(connectionURI);
+var DbConnection = builder.Configuration.GetValue<string>("Connection:Postgres");
+DbConnection = DbConnectionHelper.BuildPostgresConnection(DbConnection);
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(connectionURI));
+    options.UseNpgsql(DbConnection));
 
 // Configure repositories
 builder.Services.AddScoped<AccountRepository>();
