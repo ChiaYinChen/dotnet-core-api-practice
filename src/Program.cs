@@ -42,6 +42,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 // Custom middlewares
+app.UseMiddleware<JwtMiddleware>();
 app.UseMiddleware<ErrorHandlerMiddleware>();
 
 app.MapControllers();

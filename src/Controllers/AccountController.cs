@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using WebApiApp.Authorization;
 using WebApiApp.Constants;
 using WebApiApp.DTOs;
 using WebApiApp.Models;
@@ -8,6 +9,7 @@ using WebApiApp.Helpers;
 
 namespace WebApiApp.Controllers
 {
+    [Authorize]
     [Route("api/accounts")]
     [ApiController]
     public class AccountController : ControllerBase
@@ -46,6 +48,7 @@ namespace WebApiApp.Controllers
         }
         
         // POST: /api/accounts
+        [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult<Response<AccountDTO>>> CreateAccount([FromBody] CreateAccountDTO createAccountDto)
         {

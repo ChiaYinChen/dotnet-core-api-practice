@@ -58,5 +58,25 @@ namespace WebApiApp.Helpers
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
+
+        public JwtSecurityToken DecodeToken(string token)
+        {
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetValue<string>("JWT:SECRET_KEY")));
+            var parameters = new TokenValidationParameters
+            {
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = key,
+                // set clockskew to zero so tokens expire exactly at token expiration time
+                ClockSkew = TimeSpan.Zero
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            tokenHandler.ValidateToken(token, parameters, out SecurityToken validatedToken);
+            var jwtToken = (JwtSecurityToken)validatedToken;
+            return jwtToken;
+        }
     }
 }
