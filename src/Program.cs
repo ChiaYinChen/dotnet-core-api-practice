@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using WebApiApp.Middlewares;
 using WebApiApp.Data;
 using WebApiApp.Helpers;
 using WebApiApp.Repositories;
@@ -39,6 +40,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Custom middlewares
+app.UseMiddleware<ErrorHandlerMiddleware>();
 
 app.MapControllers();
 

@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using WebApiApp.Constants;
 using WebApiApp.DTOs;
 using WebApiApp.Models;
 using WebApiApp.Services;
@@ -20,7 +21,7 @@ namespace WebApiApp.Controllers
             _mapper = mapper;
         }
 
-        // GET /api/account
+        // GET /api/accounts
         [HttpGet]
         public async Task<ActionResult<Response<IEnumerable<AccountDTO>>>> GetAccounts()
         {
@@ -30,16 +31,14 @@ namespace WebApiApp.Controllers
             ));
         }
 
-        // GET /api/account/:id
+        // GET /api/accounts/:id
         [HttpGet("{id}")]
         public async Task<ActionResult<Response<AccountDTO>>> GetAccount(Guid id)
         {
             var account = await _accountService.GetAccountByID(id);
             if (account == null)
             {
-                return NotFound(ResponseHelper.Error(
-                    message: "Account not found"
-                ));
+                throw new NotFoundError(CustomErrorCode.EntityNotFound, "Account not found");
             }
             return Ok(ResponseHelper.Success(
                 data: _mapper.Map<AccountDTO>(account)
@@ -53,9 +52,7 @@ namespace WebApiApp.Controllers
             var account = await _accountService.GetAccountByEmail(createAccountDto.Email);
             if (account != null)
             {
-                return StatusCode(409, ResponseHelper.Error(
-                    message: "Email already registered"
-                ));
+                throw new ConflictError(CustomErrorCode.EntityConflict, "Email already registered");
             }
 
             var createdAccount = await _accountService.CreateAccount(createAccountDto);
@@ -73,9 +70,7 @@ namespace WebApiApp.Controllers
             var account = await _accountService.GetAccountByID(id);
             if (account == null)
             {
-                return NotFound(ResponseHelper.Error(
-                    message: "Account not found"
-                ));
+                throw new NotFoundError(CustomErrorCode.EntityNotFound, "Account not found");
             }
 
             var updatedAccount = await _accountService.UpdateAccount(account, updateAccountDTO);
@@ -92,9 +87,7 @@ namespace WebApiApp.Controllers
             var account = await _accountService.GetAccountByID(id);
             if (account == null)
             {
-                return NotFound(ResponseHelper.Error(
-                    message: "Account not found"
-                ));
+                throw new NotFoundError(CustomErrorCode.EntityNotFound, "Account not found");
             }
             
             await _accountService.DeleteAccount(account);

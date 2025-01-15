@@ -1,4 +1,5 @@
 using AutoMapper;
+using WebApiApp.Constants;
 using WebApiApp.DTOs;
 using WebApiApp.Entities;
 using WebApiApp.Repositories;
@@ -56,7 +57,7 @@ namespace WebApiApp.Services
             }
             if (!updatedData.Any())
             {
-                throw new ArgumentException("No valid fields to update.");
+                throw new BadRequestError(CustomErrorCode.VALIDATE_ERROR, "No valid fields to update");
             }
             
             return await _accountRepository.UpdateAsync(accountObj, updatedData);
@@ -67,7 +68,7 @@ namespace WebApiApp.Services
             return await _accountRepository.RemoveAsync(accountObj);
         }
 
-        public async Task<Account> Authenticate(string email, string password)
+        public async Task<Account?> Authenticate(string email, string password)
         {
             var account = await GetAccountByEmail(email);
             if (account == null)

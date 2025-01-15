@@ -13,15 +13,5 @@ namespace WebApiApp.Helpers
                 Data = data
             };
         }
-
-        public static Response Error(string message, object? errors = null, string code = "9999")
-        {
-            return new Response
-            {
-                Code = code,
-                Message = message,
-                Errors = errors
-            };
-        }
     }
 }

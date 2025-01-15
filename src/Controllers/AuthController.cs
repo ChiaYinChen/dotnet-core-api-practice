@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using WebApiApp.Constants;
 using WebApiApp.Models;
 using WebApiApp.Services;
 using WebApiApp.Helpers;
@@ -25,15 +26,11 @@ namespace WebApiApp.Controllers
             var account = await _accountService.Authenticate(request.Email, request.Password);
             if (account == null)
             {
-                return Unauthorized(ResponseHelper.Error(
-                    message: "Incorrect email or password"
-                ));
+                throw new UnauthenticatedError(CustomErrorCode.IncorrectEmailPassword, "Incorrect email or password");
             }
             if (!account.IsActive)
             {
-                return StatusCode(StatusCodes.Status403Forbidden, ResponseHelper.Error(
-                    message: "Inactive account"
-                ));
+                throw new UnauthorizedError(CustomErrorCode.InactiveAccount, "Inactive account");
             }
             return Ok(new Token
             {
