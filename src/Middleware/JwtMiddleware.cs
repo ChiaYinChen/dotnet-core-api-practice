@@ -1,7 +1,5 @@
-using System.Text.Json;
 using Microsoft.IdentityModel.Tokens;
 using WebApiApp.Constants;
-using WebApiApp.Models;
 using WebApiApp.Helpers;
 using WebApiApp.Services;
 
@@ -27,18 +25,21 @@ namespace WebApiApp.Middlewares
                     var tokenType = jwtToken.Claims.FirstOrDefault(c => c.Type == "type")?.Value;
                     if (tokenType != "access")
                     {
-                        await HandleExceptionAsync(context, "Invalid token type", CustomErrorCode.InvalidTokenType, StatusCodes.Status401Unauthorized);
+                        await ErrorResponseHelper.HandleException(context, "Invalid token type", CustomErrorCode.InvalidTokenType, StatusCodes.Status401Unauthorized);
+                        return;
                     }
 
                     var sub = jwtToken.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
                     var account = await accountService.GetAccountByEmail(email: sub);
                     if (account == null)
                     {
-                        await HandleExceptionAsync(context, "Account not found", CustomErrorCode.EntityNotFound, StatusCodes.Status404NotFound);
+                        await ErrorResponseHelper.HandleException(context, "Account not found", CustomErrorCode.EntityNotFound, StatusCodes.Status404NotFound);
+                        return;
                     }
                     if (!account.IsActive)
                     {
-                        await HandleExceptionAsync(context, "Inactive account", CustomErrorCode.InactiveAccount, StatusCodes.Status403Forbidden);
+                        await ErrorResponseHelper.HandleException(context, "Inactive account", CustomErrorCode.InactiveAccount, StatusCodes.Status403Forbidden);
+                        return;
                     }
 
                     // Account is valid, attach to context
@@ -49,31 +50,15 @@ namespace WebApiApp.Middlewares
             }
             catch (SecurityTokenExpiredException)
             {
-                await HandleExceptionAsync(context, "Token expired", CustomErrorCode.TokenExpired, StatusCodes.Status401Unauthorized);
+                await ErrorResponseHelper.HandleException(context, "Token expired", CustomErrorCode.TokenExpired, StatusCodes.Status401Unauthorized);
+                return;
             }
             catch (Exception)
             {
-                await HandleExceptionAsync(context, "Could not validate credentials", CustomErrorCode.InvalidCredentials, StatusCodes.Status401Unauthorized);
+                await ErrorResponseHelper.HandleException(context, "Could not validate credentials", CustomErrorCode.InvalidCredentials, StatusCodes.Status401Unauthorized);
+                return;
             }
             
-        }
-
-        private static Task HandleExceptionAsync(HttpContext context, string message, string errorCode, int statusCode)
-        {
-            context.Response.ContentType = "application/json";
-            context.Response.StatusCode = statusCode;
-
-            var errorResponse = new Response
-            {
-                Code = errorCode,
-                Message = message,
-                Errors = null
-            };
-
-            var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
-            var result = JsonSerializer.Serialize(errorResponse, options);
-
-            return context.Response.WriteAsync(result);
         }
     }
 }
