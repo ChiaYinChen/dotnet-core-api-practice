@@ -23,6 +23,16 @@ namespace WebApiApp.Controllers
             _mapper = mapper;
         }
 
+        // GET /api/accounts/me
+        [HttpGet("me")]
+        public async Task<ActionResult<Response<AccountDTO>>> GetCurrentAccount()
+        {
+            var account = HttpContext.Items["Account"];
+            return Ok(ResponseHelper.Success(
+                data: _mapper.Map<AccountDTO>(account)
+            ));
+        }
+        
         // GET /api/accounts
         [HttpGet]
         public async Task<ActionResult<Response<IEnumerable<AccountDTO>>>> GetAccounts()
