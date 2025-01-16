@@ -20,7 +20,7 @@ namespace WebApiApp.Helpers
         {
             return EncodeToken(
                 tokenType: "access",
-                lifetime: _config.GetValue<int>("JWT:ACCESS_TOKEN_LIFETIME"),
+                lifetime: _config.GetValue<int>("JWT:ACCESS_TOKEN_TTL"),
                 subject: sub
             );
         }
@@ -29,7 +29,7 @@ namespace WebApiApp.Helpers
         {
             return EncodeToken(
                 tokenType: "refresh",
-                lifetime: _config.GetValue<int>("JWT:REFRESH_TOKEN_LIFETIME"),
+                lifetime: _config.GetValue<int>("JWT:REFRESH_TOKEN_TTL"),
                 subject: sub
             );
         }

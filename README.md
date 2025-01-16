@@ -4,9 +4,9 @@ This project is for practicing .NET Core Web API development. It uses Docker Com
 
 ## Development
 
-To start PostgreSQL in Docker for local development and testing, make sure to provide the following variables:
+### Setting up PostgreSQL
 
-Recommend using [direnv](https://github.com/direnv/direnv) for management of environment variables.
+To start PostgreSQL in Docker for local development and testing, make sure to provide the following variables:
 
 ```
 POSTGRES_HOST=postgres
@@ -15,6 +15,14 @@ POSTGRES_USER=
 POSTGRES_PASSWORD=
 POSTGRES_DB=
 ```
+
+Recommend using [direnv](https://github.com/direnv/direnv) for management of environment variables.
+
+### Setting up the API server
+
+Refer to the `.env.example` file for the required variables.
+
+### Running
 
 To start the whole stack, run:
 	
