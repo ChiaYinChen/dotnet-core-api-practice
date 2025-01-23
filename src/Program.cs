@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using WebApiApp.Middlewares;
 using WebApiApp.Data;
 using WebApiApp.Helpers;
+using WebApiApp.Models;
 using WebApiApp.Repositories;
 using WebApiApp.Services;
 
@@ -13,12 +14,16 @@ DbConnection = DbConnectionHelper.BuildPostgresConnection(DbConnection);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(DbConnection));
 
+// Load SMTP settings from configuration
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("SMTP"));
+
 // Configure repositories
 builder.Services.AddScoped<AccountRepository>();
 
 // Configure services
 builder.Services.AddScoped<JwtHelper>();
 builder.Services.AddScoped<AccountService>();
+builder.Services.AddTransient<EmailService>();
 
 // Add AutoMapper with a custom mapping profile
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

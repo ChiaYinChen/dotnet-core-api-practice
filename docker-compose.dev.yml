@@ -13,6 +13,12 @@ services:
       - JWT__SECRET_KEY=${JWT_SECRET_KEY}
       - JWT__ACCESS_TOKEN_TTL=${ACCESS_TOKEN_TTL:-15}
       - JWT__REFRESH_TOKEN_TTL=${REFRESH_TOKEN_TTL:-1440}
+      - SMTP__HOST=${EMAIL_HOST}
+      - SMTP__PORT=${EMAIL_PORT:-587}
+      - SMTP__USERNAME=${EMAIL_ACCOUNT}
+      - SMTP__PASSWORD=${EMAIL_PASSWORD}
+      - SMTP__FROM_EMAIL=${FROM_EMAIL:-no-reply@example.com}
+      - SMTP__EMAIL_SENDER=${EMAIL_SENDER:-no-reply}
     ports:
       - 5000:5000
     volumes:
