@@ -45,7 +45,7 @@ namespace WebApiApp.Helpers
             };
             var userClaimsIdentity = new ClaimsIdentity(claims);
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetValue<string>("JWT:SECRET_KEY")));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetValue<string>("JWT:SECRET_KEY")!));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
@@ -61,7 +61,7 @@ namespace WebApiApp.Helpers
 
         public JwtSecurityToken DecodeToken(string token)
         {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetValue<string>("JWT:SECRET_KEY")));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetValue<string>("JWT:SECRET_KEY")!));
             var parameters = new TokenValidationParameters
             {
                 ValidateIssuer = false,

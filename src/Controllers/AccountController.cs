@@ -28,9 +28,9 @@ namespace WebApiApp.Controllers
         public async Task<ActionResult<Response<AccountDTO>>> GetCurrentAccount()
         {
             var account = HttpContext.Items["Account"];
-            return Ok(ResponseHelper.Success(
+            return await Task.FromResult(Ok(ResponseHelper.Success(
                 data: _mapper.Map<AccountDTO>(account)
-            ));
+            )));
         }
         
         // GET /api/accounts

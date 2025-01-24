@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Configure DbContext with PostgreSQL connection
 var DbConnection = builder.Configuration.GetValue<string>("Connection:Postgres");
-DbConnection = DbConnectionHelper.BuildPostgresConnection(DbConnection);
+DbConnection = DbConnectionHelper.BuildPostgresConnection(DbConnection!);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(DbConnection));
 

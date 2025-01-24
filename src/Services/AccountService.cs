@@ -84,7 +84,7 @@ namespace WebApiApp.Services
             {
                 return null;
             }
-            if (!Security.VerifyPassword(password, account.HashedPassword))
+            if (!Security.VerifyPassword(password, account.HashedPassword!))
             {
                 return null;
             }

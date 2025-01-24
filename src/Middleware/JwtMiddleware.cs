@@ -30,7 +30,7 @@ namespace WebApiApp.Middlewares
                     }
 
                     var sub = jwtToken.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
-                    var account = await accountService.GetAccountByEmail(email: sub);
+                    var account = await accountService.GetAccountByEmail(email: sub!);
                     if (account == null)
                     {
                         await ErrorResponseHelper.HandleException(context, "Account not found", CustomErrorCode.EntityNotFound, StatusCodes.Status404NotFound);
