@@ -10,11 +10,13 @@ namespace WebApiApp.Services
     public class AccountService
     {
         private readonly AccountRepository _accountRepository;
+        private readonly EmailService _emailService;
         private readonly IMapper _mapper;
 
-        public AccountService(AccountRepository accountRepository, IMapper mapper)
+        public AccountService(AccountRepository accountRepository, EmailService emailService, IMapper mapper)
         {
             _accountRepository = accountRepository;
+            _emailService = emailService;
             _mapper = mapper;
         }
 
@@ -36,7 +38,14 @@ namespace WebApiApp.Services
         public async Task<Account> CreateAccount(CreateAccountDTO createAccountDto)
         {
             var account = _mapper.Map<Account>(createAccountDto);
-            return await _accountRepository.CreateAsync(account);
+            var createdAccount = await _accountRepository.CreateAsync(account);
+            await _emailService.Send(
+                receivers: [createdAccount.Email],
+                subject: "Sign-up Successful",
+                body: $@"<h4>Welcome!</h4>
+                         <p>Thanks for registering. Your account has been successfully created.</p>"
+            );
+            return createdAccount;
         }
 
         public async Task<Account> UpdateAccount(Account accountObj, UpdateAccountDTO updateAccountDto)
