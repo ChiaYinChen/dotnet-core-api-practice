@@ -11,12 +11,19 @@ namespace WebApiApp.Services
     {
         private readonly AccountRepository _accountRepository;
         private readonly EmailService _emailService;
+        private readonly TemplateService _templateService;
         private readonly IMapper _mapper;
 
-        public AccountService(AccountRepository accountRepository, EmailService emailService, IMapper mapper)
+        public AccountService(
+            AccountRepository accountRepository,
+            EmailService emailService,
+            TemplateService templateService,
+            IMapper mapper
+        )
         {
             _accountRepository = accountRepository;
             _emailService = emailService;
+            _templateService = templateService;
             _mapper = mapper;
         }
 
@@ -39,11 +46,11 @@ namespace WebApiApp.Services
         {
             var account = _mapper.Map<Account>(createAccountDto);
             var createdAccount = await _accountRepository.CreateAsync(account);
+            var htmlContent = _templateService.RenderTemplate("register_success.html", new { user_name = createdAccount.Name});
             await _emailService.Send(
                 receivers: [createdAccount.Email],
                 subject: "Sign-up Successful",
-                body: $@"<h4>Welcome!</h4>
-                         <p>Thanks for registering. Your account has been successfully created.</p>"
+                body: htmlContent
             );
             return createdAccount;
         }

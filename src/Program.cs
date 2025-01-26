@@ -24,6 +24,7 @@ builder.Services.AddScoped<AccountRepository>();
 builder.Services.AddScoped<JwtHelper>();
 builder.Services.AddScoped<AccountService>();
 builder.Services.AddTransient<EmailService>();
+builder.Services.AddTransient<TemplateService>();
 
 // Add AutoMapper with a custom mapping profile
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
