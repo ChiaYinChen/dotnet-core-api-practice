@@ -26,5 +26,6 @@ namespace WebApiApp.Constants
 
         // Validation errors
         public const string VALIDATE_ERROR = "9100";                 // General validation error
+        public const string InvalidOperation = "9200";               // Invalid operation
     }
 }
