@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace WebApiApp.Constants
 {
     public static class CustomErrorCode
@@ -24,8 +22,8 @@ namespace WebApiApp.Constants
         public const string IncorrectEmailPassword = "4101";         // Incorrect email or password
         public const string InvalidStateParameter = "4102";          // Invalid state parameter in login attempt
 
-        // Validation errors
-        public const string VALIDATE_ERROR = "9100";                 // General validation error
+        // General errors
+        public const string ValidateError = "9100";                  // General validation error
         public const string InvalidOperation = "9200";               // Invalid operation
     }
 }

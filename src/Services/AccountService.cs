@@ -65,7 +65,7 @@ namespace WebApiApp.Services
             }
             if (!updatedData.Any())
             {
-                throw new BadRequestError(CustomErrorCode.VALIDATE_ERROR, "No valid fields to update");
+                throw new BadRequestError(CustomErrorCode.ValidateError, "No valid fields to update");
             }
             
             return await _accountRepository.UpdateAsync(accountObj, updatedData);
