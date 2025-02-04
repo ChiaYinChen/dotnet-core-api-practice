@@ -11,11 +11,17 @@ namespace WebApiApp.Controllers
     public class AuthController : ControllerBase
     {
         private readonly AccountService _accountService;
+        private readonly GoogleAuthService _googleAuthService;
         private readonly JwtHelper _jwtHelper;
 
-        public AuthController(AccountService accountService, JwtHelper jwtHelper)
+        public AuthController(
+            AccountService accountService,
+            GoogleAuthService googleAuthService,
+            JwtHelper jwtHelper
+        )
         {
             _accountService = accountService;
+            _googleAuthService = googleAuthService;
             _jwtHelper = jwtHelper;
         }
 
@@ -37,6 +43,16 @@ namespace WebApiApp.Controllers
                 access_token = _jwtHelper.CreateAccessToken(sub: account.Email),
                 refresh_token = _jwtHelper.CreateRefreshToken(sub: account.Email),
                 token_type = "bearer"
+            });
+        }
+
+        // POST: /api/auth/google/login
+        [HttpPost("google/login")]
+        public ActionResult<GoogleAuthUrl> LoginViaGoogle()
+        {
+            return Ok(new GoogleAuthUrl
+            {
+                authorization_url = _googleAuthService.BuildAuthUrl()
             });
         }
     }
