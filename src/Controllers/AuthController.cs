@@ -25,8 +25,8 @@ namespace WebApiApp.Controllers
             _jwtHelper = jwtHelper;
         }
 
-        // POST: /api/auth/access-token
-        [HttpPost("access-token")]
+        // POST: /api/auth/login
+        [HttpPost("login")]
         public async Task<ActionResult<Token>> Login([FromBody] LoginRequest request)
         {
             var account = await _accountService.Authenticate(request.Email, request.Password);
@@ -46,14 +46,19 @@ namespace WebApiApp.Controllers
             });
         }
 
-        // POST: /api/auth/google/login
-        [HttpPost("google/login")]
-        public ActionResult<GoogleAuthUrl> LoginViaGoogle()
+        // GET: /api/auth/:provider/authorize
+        [HttpGet("{provider}/authorize")]
+        public ActionResult<AuthUrl> Authorize([FromRoute] string provider)
         {
-            return Ok(new GoogleAuthUrl
+            var providerServices = new Dictionary<string, IAuthService>
             {
-                authorization_url = _googleAuthService.BuildAuthUrl()
-            });
+                { "google", _googleAuthService }
+            };
+            if (!providerServices.TryGetValue(provider.ToLower(), out var authService))
+            {
+                throw new BadRequestError(CustomErrorCode.ValidateError, "Invalid provider");
+            }
+            return Ok(new AuthUrl{ authorization_url = authService.BuildAuthUrl() });
         }
     }
 }

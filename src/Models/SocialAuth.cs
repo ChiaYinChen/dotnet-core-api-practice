@@ -7,7 +7,7 @@ namespace WebApiApp.Models
         public required string REDIRECT_URL { get; set; }
     }
 
-    public class GoogleAuthUrl
+    public class AuthUrl
     {
         public required string authorization_url { get; set; }
     }
