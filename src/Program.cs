@@ -24,6 +24,7 @@ builder.Services.Configure<GoogleAuthSettings>(builder.Configuration.GetSection(
 builder.Services.AddScoped<AccountRepository>();
 
 // Configure services
+builder.Services.AddHttpClient<HttpRequestService>();
 builder.Services.AddScoped<JwtHelper>();
 builder.Services.AddScoped<AccountService>();
 builder.Services.AddTransient<EmailService>();

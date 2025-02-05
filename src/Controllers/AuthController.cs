@@ -60,5 +60,26 @@ namespace WebApiApp.Controllers
             }
             return Ok(new AuthUrl{ authorization_url = authService.BuildAuthUrl() });
         }
+
+        // GET: /api/auth/:provider/callback
+        [HttpGet("{provider}/callback")]
+        public async Task<IActionResult> Callback([FromRoute] string provider, [FromQuery] AuthCallbackRequest request)
+        {
+            var providerServices = new Dictionary<string, IAuthService>
+            {
+                { "google", _googleAuthService }
+            };
+            if (!providerServices.TryGetValue(provider.ToLower(), out var authService))
+            {
+                throw new BadRequestError(CustomErrorCode.ValidateError, "Invalid provider");
+            }
+            if (request.state != null && !authService.ValidateState(request.state))
+            {
+                throw new BadRequestError(CustomErrorCode.InvalidStateParameter, "Invalid state");
+            }
+
+            var accessToken = await authService.ExchangeCodeForToken(request.code);
+            return Ok(new { data = accessToken });
+        }
     }
 }

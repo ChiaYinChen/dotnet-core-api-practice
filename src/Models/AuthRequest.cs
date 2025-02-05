@@ -9,4 +9,11 @@ namespace WebApiApp.Models
         [Required]
         public required string Password { get; set; }
     }
+
+    public class AuthCallbackRequest
+    {
+        [Required]
+        public string code { get; set; } = string.Empty;
+        public string? state { get; set; }
+    }
 }

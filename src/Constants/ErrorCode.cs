@@ -21,6 +21,7 @@ namespace WebApiApp.Constants
         // Login errors
         public const string IncorrectEmailPassword = "4101";         // Incorrect email or password
         public const string InvalidStateParameter = "4102";          // Invalid state parameter in login attempt
+        public const string FailedGetGoogleAccessToken = "4103";     // Failed to obtain Google access token
 
         // General errors
         public const string ValidateError = "9100";                  // General validation error
