@@ -12,11 +12,16 @@ namespace WebApiApp.Data
         }
 
         public DbSet<Account> Accounts { get; set; }
+        public DbSet<SocialAccount> SocialAccounts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Account>()
                 .HasIndex(a => a.Email)
+                .IsUnique();
+
+            modelBuilder.Entity<SocialAccount>()
+                .HasIndex(s => new { s.Provider, s.UniqueId, s.AccountId })
                 .IsUnique();
         }
 
