@@ -63,5 +63,14 @@ namespace WebApiApp.Services
             }
             throw new UnauthorizedError(CustomErrorCode.FailedGetGoogleAccessToken, "Failed to obtain access token");
         }
+
+        public async Task<Dictionary<string, object>> GetUserInfo(string accessToken)
+        {
+            var (statusCode, responseData) = await _httpRequestService.Get(
+                url: "https://www.googleapis.com/oauth2/v2/userinfo", 
+                headers: new Dictionary<string, string> { { "Authorization", $"Bearer {accessToken}" } }
+            );
+            return responseData;
+        }
     }
 }

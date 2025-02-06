@@ -79,7 +79,8 @@ namespace WebApiApp.Controllers
             }
 
             var accessToken = await authService.ExchangeCodeForToken(request.code);
-            return Ok(new { data = accessToken });
+            var userInfo = await authService.GetUserInfo(accessToken);
+            return Ok(new { data = userInfo });
         }
     }
 }

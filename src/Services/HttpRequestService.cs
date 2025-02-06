@@ -1,6 +1,7 @@
 using System.Net;
 using System.Text;
 using System.Text.Json;
+using System.Web;
 
 namespace WebApiApp.Services
 {
@@ -13,11 +14,38 @@ namespace WebApiApp.Services
             _httpClient = httpClient;
         }
 
-        public async Task<(HttpStatusCode StatusCode, Dictionary<string, object> JsonData)> Get(string url)
+        public async Task<(HttpStatusCode StatusCode, Dictionary<string, object> JsonData)> Get(
+            string url, 
+            Dictionary<string, string>? queryParams = null, 
+            Dictionary<string, string>? headers = null
+        )
         {
             try
             {
-                using var response = await _httpClient.GetAsync(url);
+                // Query Parameters
+                if (queryParams?.Count > 0)
+                {
+                    var queryString = HttpUtility.ParseQueryString(string.Empty);
+                    foreach (var param in queryParams)
+                    {
+                        queryString[param.Key] = param.Value;
+                    }
+                    url = $"{url}?{queryString}";
+                }
+
+                using var request = new HttpRequestMessage(HttpMethod.Get, url);
+
+                // Headers
+                if (headers?.Count > 0)
+                {
+                    foreach (var header in headers)
+                    {
+                        request.Headers.TryAddWithoutValidation(header.Key, header.Value);
+                    }
+                }
+
+                // Request
+                using var response = await _httpClient.SendAsync(request);
                 var content = await response.Content.ReadAsStringAsync();
 
                 var jsonData = TryParseJson(content);
@@ -33,9 +61,11 @@ namespace WebApiApp.Services
         {
             try
             {
+                // Request Data
                 var json = data is not null ? JsonSerializer.Serialize(data) : "{}";
                 using var body = new StringContent(json, Encoding.UTF8, "application/json");
 
+                // Request
                 using var response = await _httpClient.PostAsync(url, body);
                 var content = await response.Content.ReadAsStringAsync();
 
