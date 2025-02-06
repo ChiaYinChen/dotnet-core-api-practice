@@ -8,10 +8,12 @@ namespace WebApiApp.Services
     public class HttpRequestService
     {
         private readonly HttpClient _httpClient;
+        private readonly ILogger<HttpRequestService> _logger;
 
-        public HttpRequestService(HttpClient httpClient)
+        public HttpRequestService(HttpClient httpClient, ILogger<HttpRequestService> logger)
         {
             _httpClient = httpClient;
+            _logger = logger;
         }
 
         public async Task<(HttpStatusCode StatusCode, Dictionary<string, object> JsonData)> Get(
@@ -25,11 +27,7 @@ namespace WebApiApp.Services
                 // Query Parameters
                 if (queryParams?.Count > 0)
                 {
-                    var queryString = HttpUtility.ParseQueryString(string.Empty);
-                    foreach (var param in queryParams)
-                    {
-                        queryString[param.Key] = param.Value;
-                    }
+                    var queryString = string.Join("&", queryParams.Select(kv => $"{Uri.EscapeDataString(kv.Key)}={Uri.EscapeDataString(kv.Value)}"));
                     url = $"{url}?{queryString}";
                 }
 
@@ -44,7 +42,7 @@ namespace WebApiApp.Services
                     }
                 }
 
-                // Request
+                // Send Request
                 using var response = await _httpClient.SendAsync(request);
                 var content = await response.Content.ReadAsStringAsync();
 
@@ -57,28 +55,42 @@ namespace WebApiApp.Services
             }
         }
 
-        public async Task<(HttpStatusCode StatusCode, Dictionary<string, object> JsonData)> Post<T>(string url, T data)
+        public async Task<(HttpStatusCode StatusCode, Dictionary<string, object> JsonData)> Post<T>(
+            string url,
+            T? data,
+            Dictionary<string, string>? headers = null
+        )
         {
             try
             {
                 // Request Data
                 var json = data is not null ? JsonSerializer.Serialize(data) : "{}";
-                using var body = new StringContent(json, Encoding.UTF8, "application/json");
+                using var request = new HttpRequestMessage(HttpMethod.Post, url);
+                request.Content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                // Request
-                using var response = await _httpClient.PostAsync(url, body);
+                // Headers
+                if (headers?.Count > 0)
+                {
+                    foreach (var header in headers)
+                    {
+                        request.Headers.TryAddWithoutValidation(header.Key, header.Value);
+                    }
+                }
+
+                // Send Request
+                using var response = await _httpClient.SendAsync(request);
                 var content = await response.Content.ReadAsStringAsync();
 
                 var jsonData = TryParseJson(content);
                 return (response.StatusCode, jsonData);
             }
-            catch (HttpRequestException exc)
+            catch (Exception exc)
             {
                 return HandleHttpException(exc);
             }
         }
 
-        private static Dictionary<string, object> TryParseJson(string content)
+        private Dictionary<string, object> TryParseJson(string content)
         {
             try
             {
@@ -93,9 +105,11 @@ namespace WebApiApp.Services
             }
         }
 
-        private static (HttpStatusCode, Dictionary<string, object>) HandleHttpException(HttpRequestException exc)
+        private (HttpStatusCode, Dictionary<string, object>) HandleHttpException(Exception exc)
         {
-            return (HttpStatusCode.ServiceUnavailable, new Dictionary<string, object> { { "error", exc.Message } });
+            var statusCode = (exc as HttpRequestException)?.StatusCode ?? HttpStatusCode.ServiceUnavailable;
+            _logger.LogError(exc, "[HttpRequestService] Error: {ErrorMessage}, StatusCode: {StatusCode}", exc.Message, statusCode);
+            return (statusCode, new Dictionary<string, object> { { "error", exc.Message } });
         }
     }
 }
