@@ -17,6 +17,10 @@ namespace WebApiApp.MappingProfiles
             // Map Account to AccountDTO
             // Source: Account and Destination: AccountDTO
             CreateMap<Account, AccountDTO>();
+
+            // Map CreateSocialAccountDTO to SocialAccount (for adding new account with social oauth)
+            // Source: CreateSocialAccountDTO and Destination: SocialAccount
+            CreateMap<CreateSocialAccountDTO, SocialAccount>();
         }
     }
 }

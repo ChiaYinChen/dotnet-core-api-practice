@@ -31,4 +31,11 @@ namespace WebApiApp.DTOs
         [JsonIgnore]
         public string? HashedPassword { get; set; }
     }
+
+    public class CreateSocialAccountDTO
+    {
+        public required string Provider { get; set; }
+        public required string UniqueId { get; set; }
+        public required Guid AccountId { get; set; }
+    }
 }

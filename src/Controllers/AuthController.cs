@@ -63,7 +63,7 @@ namespace WebApiApp.Controllers
 
         // GET: /api/auth/:provider/callback
         [HttpGet("{provider}/callback")]
-        public async Task<IActionResult> Callback([FromRoute] string provider, [FromQuery] AuthCallbackRequest request)
+        public async Task<ActionResult<Token>> Callback([FromRoute] string provider, [FromQuery] AuthCallbackRequest request)
         {
             var providerServices = new Dictionary<string, IAuthService>
             {
@@ -80,7 +80,14 @@ namespace WebApiApp.Controllers
 
             var accessToken = await authService.ExchangeCodeForToken(request.code);
             var userInfo = await authService.GetUserInfo(accessToken);
-            return Ok(new { data = userInfo });
+
+            var account = await _accountService.CreateAccountWithSocial(provider, userInfo);
+            return Ok(new Token
+            {
+                access_token = _jwtHelper.CreateAccessToken(sub: account.Email),
+                refresh_token = _jwtHelper.CreateRefreshToken(sub: account.Email),
+                token_type = "bearer"
+            });
         }
     }
 }

@@ -10,16 +10,19 @@ namespace WebApiApp.Services
     public class AccountService
     {
         private readonly AccountRepository _accountRepository;
+        private readonly SocialAccountRepository _socialAccountRepository;
         private readonly EmailService _emailService;
         private readonly IMapper _mapper;
 
         public AccountService(
             AccountRepository accountRepository,
+            SocialAccountRepository socialAccountRepository,
             EmailService emailService,
             IMapper mapper
         )
         {
             _accountRepository = accountRepository;
+            _socialAccountRepository = socialAccountRepository;
             _emailService = emailService;
             _mapper = mapper;
         }
@@ -43,8 +46,52 @@ namespace WebApiApp.Services
         {
             var account = _mapper.Map<Account>(createAccountDto);
             var createdAccount = await _accountRepository.CreateAsync(account);
-            await _emailService.SendRegisterSuccessEmail(createdAccount.Email, createdAccount.Name);
+            await _emailService.SendRegisterSuccessEmail(createdAccount.Email, createdAccount.Name!);
             return createdAccount;
+        }
+
+        public async Task<Account> CreateAccountWithSocial(string provider, Dictionary<string, object> socialInfo)
+        {
+            var email = socialInfo["email"].ToString();
+            var name = socialInfo.GetValueOrDefault("name")?.ToString();
+            var uniqueId = socialInfo.GetValueOrDefault("id")?.ToString();
+
+            var account = await _accountRepository.GetByEmailAsync(email!);
+            bool isNewAccount = account == null;
+            
+            if (isNewAccount)
+            {
+                // Create account
+                var createAccountDto = new CreateAccountDTO
+                {
+                    Email = email!,
+                    Name = name,
+                    Password = Guid.NewGuid().ToString("N")  // Random password
+                };
+                account = _mapper.Map<Account>(createAccountDto);
+                account = await _accountRepository.CreateAsync(account);
+            }
+
+            var socialAccount = await _socialAccountRepository.GetByProviderAsync(provider, uniqueId!);
+            if (socialAccount == null)
+            {
+                // Create social account
+                var createSocialAccountDto = new CreateSocialAccountDTO
+                {
+                    Provider = provider,
+                    UniqueId = uniqueId!,
+                    AccountId = account!.Id
+                };
+                socialAccount = _mapper.Map<SocialAccount>(createSocialAccountDto);
+                await _socialAccountRepository.CreateAsync(socialAccount);
+            }
+
+            if (isNewAccount)
+            {
+                await _emailService.SendRegisterSuccessEmail(account!.Email, account.Name!);
+            }
+            
+            return account!;
         }
 
         public async Task<Account> UpdateAccount(Account accountObj, UpdateAccountDTO updateAccountDto)

@@ -22,6 +22,7 @@ builder.Services.Configure<GoogleAuthSettings>(builder.Configuration.GetSection(
 
 // Configure repositories
 builder.Services.AddScoped<AccountRepository>();
+builder.Services.AddScoped<SocialAccountRepository>();
 
 // Configure services
 builder.Services.AddHttpClient<HttpRequestService>();

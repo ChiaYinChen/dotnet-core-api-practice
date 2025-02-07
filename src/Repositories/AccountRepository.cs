@@ -12,7 +12,7 @@ namespace WebApiApp.Repositories
 
         public async Task<Account?> GetByEmailAsync(string email)
         {
-            return await _context.Accounts.FirstOrDefaultAsync(obj => obj.Email == email);
+            return await _context.Accounts.Where(a => a.Email == email).FirstOrDefaultAsync();
         }
     }
 }
