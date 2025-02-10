@@ -17,8 +17,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Load SMTP settings from configuration
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("SMTP"));
 
-// Load Google oauth settings from configuration
+// Load OAuth settings from configuration
 builder.Services.Configure<GoogleAuthSettings>(builder.Configuration.GetSection("OAUTH"));
+builder.Services.Configure<FacebookAuthSettings>(builder.Configuration.GetSection("OAUTH"));
 
 // Configure repositories
 builder.Services.AddScoped<AccountRepository>();
@@ -31,6 +32,7 @@ builder.Services.AddScoped<AccountService>();
 builder.Services.AddTransient<EmailService>();
 builder.Services.AddTransient<TemplateService>();
 builder.Services.AddTransient<GoogleAuthService>();
+builder.Services.AddTransient<FacebookAuthService>();
 
 // Add AutoMapper with a custom mapping profile
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

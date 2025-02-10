@@ -12,16 +12,19 @@ namespace WebApiApp.Controllers
     {
         private readonly AccountService _accountService;
         private readonly GoogleAuthService _googleAuthService;
+        private readonly FacebookAuthService _facebookAuthService;
         private readonly JwtHelper _jwtHelper;
 
         public AuthController(
             AccountService accountService,
             GoogleAuthService googleAuthService,
+            FacebookAuthService facebookAuthService,
             JwtHelper jwtHelper
         )
         {
             _accountService = accountService;
             _googleAuthService = googleAuthService;
+            _facebookAuthService = facebookAuthService;
             _jwtHelper = jwtHelper;
         }
 
@@ -52,7 +55,8 @@ namespace WebApiApp.Controllers
         {
             var providerServices = new Dictionary<string, IAuthService>
             {
-                { "google", _googleAuthService }
+                { "google", _googleAuthService },
+                { "facebook", _facebookAuthService }
             };
             if (!providerServices.TryGetValue(provider.ToLower(), out var authService))
             {
@@ -67,7 +71,8 @@ namespace WebApiApp.Controllers
         {
             var providerServices = new Dictionary<string, IAuthService>
             {
-                { "google", _googleAuthService }
+                { "google", _googleAuthService },
+                { "facebook", _facebookAuthService }
             };
             if (!providerServices.TryGetValue(provider.ToLower(), out var authService))
             {

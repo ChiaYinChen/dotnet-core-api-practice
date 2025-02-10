@@ -6,17 +6,17 @@ using WebApiApp.Models;
 
 namespace WebApiApp.Services
 {
-    public class GoogleAuthService : IAuthService
+    public class FacebookAuthService : IAuthService
     {
-        private readonly GoogleAuthSettings _googleAuthSettings;
+        private readonly FacebookAuthSettings _facebookAuthSettings;
         private readonly HttpRequestService _httpRequestService;
 
-        public GoogleAuthService(
-            IOptions<GoogleAuthSettings> googleAuthSettings,
+        public FacebookAuthService(
+            IOptions<FacebookAuthSettings> facebookAuthSettings,
             HttpRequestService httpRequestService
         )
         {
-            _googleAuthSettings = googleAuthSettings.Value;
+            _facebookAuthSettings = facebookAuthSettings.Value;
             _httpRequestService = httpRequestService;
         }
 
@@ -35,11 +35,11 @@ namespace WebApiApp.Services
         {
             var queryParams = HttpUtility.ParseQueryString(string.Empty);
             queryParams["response_type"] = "code";
-            queryParams["client_id"] = _googleAuthSettings.GOOGLE_CLIENT_ID;
-            queryParams["redirect_uri"] = _googleAuthSettings.GOOGLE_REDIRECT_URL;
-            queryParams["scope"] = "openid email profile";
+            queryParams["client_id"] = _facebookAuthSettings.FACEBOOK_CLIENT_ID;
+            queryParams["redirect_uri"] = _facebookAuthSettings.FACEBOOK_REDIRECT_URL;
+            queryParams["scope"] = "email public_profile";
             queryParams["state"] = GenerateRandomState();
-            return $"https://accounts.google.com/o/oauth2/auth?{queryParams}";
+            return $"https://www.facebook.com/v22.0/dialog/oauth?{queryParams}";
         }
 
         public async Task<string> ExchangeCodeForToken(string code)
@@ -47,13 +47,12 @@ namespace WebApiApp.Services
             var data = new
             {
                 code = code,
-                client_id = _googleAuthSettings.GOOGLE_CLIENT_ID,
-                client_secret = _googleAuthSettings.GOOGLE_CLIENT_SECRET,
-                redirect_uri = _googleAuthSettings.GOOGLE_REDIRECT_URL,
-                grant_type = "authorization_code"
+                client_id = _facebookAuthSettings.FACEBOOK_CLIENT_ID,
+                client_secret = _facebookAuthSettings.FACEBOOK_CLIENT_SECRET,
+                redirect_uri = _facebookAuthSettings.FACEBOOK_REDIRECT_URL
             };
             var (_, responseData) = await _httpRequestService.Post(
-                url: "https://oauth2.googleapis.com/token",
+                url: "https://graph.facebook.com/v22.0/oauth/access_token",
                 data: data
             );
 
@@ -61,14 +60,17 @@ namespace WebApiApp.Services
             {
                 return accessToken.ToString()!;
             }
-            throw new UnauthorizedError(CustomErrorCode.FailedGetGoogleAccessToken, "Failed to obtain access token");
+            throw new UnauthorizedError(CustomErrorCode.FailedGetFacebookAccessToken, "Failed to obtain access token");
         }
 
         public async Task<Dictionary<string, object>> GetUserInfo(string accessToken)
         {
             var (statusCode, responseData) = await _httpRequestService.Get(
-                url: "https://www.googleapis.com/oauth2/v2/userinfo", 
-                headers: new Dictionary<string, string> { { "Authorization", $"Bearer {accessToken}" } }
+                url: "https://graph.facebook.com/v22.0/me",
+                queryParams: new Dictionary<string, string> {
+                    { "fields", "id,name,email,picture" },
+                    { "access_token", accessToken}
+                }
             );
             return responseData;
         }
