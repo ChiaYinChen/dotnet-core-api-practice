@@ -54,7 +54,7 @@ namespace WebApiApp.Services
         {
             var email = socialInfo["email"].ToString();
             var name = socialInfo.GetValueOrDefault("name")?.ToString();
-            var uniqueId = socialInfo.GetValueOrDefault("id")?.ToString();
+            var uniqueId = socialInfo.GetValueOrDefault("id")?.ToString() ?? socialInfo.GetValueOrDefault("sub")?.ToString();
 
             var account = await _accountRepository.GetByEmailAsync(email!);
             bool isNewAccount = account == null;

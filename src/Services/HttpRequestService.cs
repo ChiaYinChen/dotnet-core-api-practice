@@ -1,7 +1,6 @@
 using System.Net;
 using System.Text;
 using System.Text.Json;
-using System.Web;
 
 namespace WebApiApp.Services
 {
@@ -63,10 +62,21 @@ namespace WebApiApp.Services
         {
             try
             {
-                // Request Data
-                var json = data is not null ? JsonSerializer.Serialize(data) : "{}";
                 using var request = new HttpRequestMessage(HttpMethod.Post, url);
-                request.Content = new StringContent(json, Encoding.UTF8, "application/json");
+                
+                // Request Data
+                if (data is Dictionary<string, string> formData)
+                {
+                    // using application/x-www-form-urlencoded
+                    request.Content = new FormUrlEncodedContent(formData);
+                }
+                else
+                {
+                    // using application/json
+                    var json = data is not null ? JsonSerializer.Serialize(data) : "{}";
+                    request.Content = new StringContent(json, Encoding.UTF8, "application/json");
+                }
+                
 
                 // Headers
                 if (headers?.Count > 0)

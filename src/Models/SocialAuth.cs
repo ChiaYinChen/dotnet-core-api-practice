@@ -14,6 +14,13 @@ namespace WebApiApp.Models
         public required string FACEBOOK_REDIRECT_URL { get; set; }
     }
 
+    public class LineAuthSettings
+    {
+        public required string LINE_CLIENT_ID { get; set; }
+        public required string LINE_CLIENT_SECRET { get; set; }
+        public required string LINE_REDIRECT_URL { get; set; }
+    }
+
     public class AuthUrl
     {
         public required string authorization_url { get; set; }
