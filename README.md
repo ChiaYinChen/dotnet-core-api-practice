@@ -2,6 +2,14 @@
 
 This project is for practicing .NET Core Web API development. It uses Docker Compose to launch the whole backend stack, so please make sure that [Docker](https://www.docker.com/) is installed.
 
+## Key Features
+
+- [x] User can sign up and get a confirmation email to complete registration
+- [x] Support third-party login: Google, Facebook, LINE
+- [x] Use JWT for login and permission control
+- [x] User can create, view, update and delete their account info
+- [x] All API response follows a consistent format with clear success or error message
+
 ## Development
 
 ### Setting up PostgreSQL
