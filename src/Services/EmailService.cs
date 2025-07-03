@@ -11,14 +11,17 @@ namespace WebApiApp.Services
     {
         private readonly EmailSettings _emailSettings;
         private readonly TemplateService _templateService;
+        private readonly ILogger<EmailService> _logger;
 
         public EmailService(
             IOptions<EmailSettings> emailSettings,
             TemplateService templateService,
+            ILogger<EmailService> logger
         )
         {
             _emailSettings = emailSettings.Value;
             _templateService = templateService;
+            _logger = logger;
         }
 
         public async Task Send(List<string> receivers, string subject, string body)
@@ -48,6 +51,7 @@ namespace WebApiApp.Services
             }
             catch (Exception exc)
             {
+                _logger.LogError(exc, "Error occurred while sending email to {Receivers}", string.Join(", ", receivers));
                 throw new BadRequestError(CustomErrorCode.InvalidOperation, "Send email failed");
             }
         }

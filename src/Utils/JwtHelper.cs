@@ -37,6 +37,7 @@ namespace WebApiApp.Helpers
         private string EncodeToken(string tokenType, int lifetime, string subject)
         {
             var sysNow = TimeHelper.Now();
+            Console.WriteLine($"{tokenType} lifetime: {lifetime}");
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, subject),
