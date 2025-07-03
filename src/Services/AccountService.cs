@@ -1,7 +1,10 @@
 using AutoMapper;
+using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using WebApiApp.Constants;
 using WebApiApp.DTOs;
 using WebApiApp.Entities;
+using WebApiApp.Models;
 using WebApiApp.Repositories;
 using WebApiApp.Helpers;
 
@@ -27,11 +30,18 @@ namespace WebApiApp.Services
             _mapper = mapper;
         }
 
-        public async Task<List<Account>> GetAllAccounts()
+        public async Task<(List<Account> Data, Pagination Paging)> GetAllAccounts(int pageNumber, int pageSize, string orderBy)
         {
-            return await _accountRepository.GetAllAsync();
+            if (string.IsNullOrWhiteSpace(orderBy))
+            {
+                orderBy = "Id";  // default
+            }
+            Expression<Func<Account, object>> orderByExpression = a => EF.Property<object>(a, orderBy);
+            
+            var query = await _accountRepository.GetAllAsync(orderByExpression);
+            return await PaginationHelper.ApplyPagination(query, pageNumber, pageSize);
         }
-        
+
         public async Task<Account?> GetAccountByID(Guid id)
         {
             return await _accountRepository.GetByIDAsync(id);

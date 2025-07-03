@@ -5,6 +5,7 @@ namespace WebApiApp.Models
         public required string Code { get; set; }
         public required string Message { get; set; }
         public T? Data { get; set; }
+        public Pagination? Paging { get; set; }
     }
 
     public class Response

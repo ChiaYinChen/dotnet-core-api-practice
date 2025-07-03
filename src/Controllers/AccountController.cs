@@ -35,11 +35,12 @@ namespace WebApiApp.Controllers
         
         // GET /api/accounts
         [HttpGet]
-        public async Task<ActionResult<Response<IEnumerable<AccountDTO>>>> GetAccounts()
+        public async Task<ActionResult<Response<IEnumerable<AccountDTO>>>> GetAccounts([FromQuery] int page = 1, [FromQuery] int pageSize = 10, [FromQuery] string orderBy = "Id")
         {
-            var accounts = await _accountService.GetAllAccounts();
+            var (accounts, paging) = await _accountService.GetAllAccounts(page, pageSize, orderBy);
             return Ok(ResponseHelper.Success(
-                data: _mapper.Map<List<AccountDTO>>(accounts)
+                data: _mapper.Map<List<AccountDTO>>(accounts),
+                paging: paging
             ));
         }
 

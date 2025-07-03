@@ -1,10 +1,11 @@
-using WebApiApp.Data;
+using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using WebApiApp.Data;
 
 public interface IGenericRepository<TEntity> where TEntity : class
 {
     Task<TEntity?> GetByIDAsync(Guid id);
-    Task<List<TEntity>> GetAllAsync();
+    Task<IQueryable<TEntity>> GetAllAsync(Expression<Func<TEntity, object>>? orderBy = null);
     Task<TEntity> CreateAsync(TEntity entity);
     Task<TEntity> UpdateAsync(TEntity entity, object updatedObject);
     Task<TEntity> RemoveAsync(TEntity entity);
@@ -28,9 +29,14 @@ namespace WebApiApp.Repositories
             return await _dbSet.FindAsync(id);
         }
 
-        public async Task<List<TEntity>> GetAllAsync()
+        public virtual async Task<IQueryable<TEntity>> GetAllAsync(Expression<Func<TEntity, object>>? orderBy = null)
         {
-            return await _dbSet.ToListAsync();
+            var query = _dbSet.AsNoTracking();
+            if (orderBy != null)
+            {
+                query = query.OrderBy(orderBy);
+            }
+            return query;
         }
 
         public async Task<TEntity> CreateAsync(TEntity entity)
